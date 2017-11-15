@@ -1,4 +1,2 @@
-spotipy=2.4.4
-scikit-learn=0.19.1
-numpy=1.13.1
-dotenvy=0.2.0
+spotipy==2.4.4
+dotenvy==0.2.0
