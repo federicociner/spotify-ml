@@ -27,12 +27,8 @@ build:
 	@echo "Building container"
 	sudo docker build $(build_dir)
 
-runlocal-jupyter: buildlocal
+runlocal: buildlocal
 	@echo "Running container locally"
 	sudo docker run --name $(container_name) -d -p $(PORTP):8888 -v ~/Projects:/home/notebook:z $(full_image_tag)
-
-runlocal-bash: buildlocal
-	@echo "Running container locally"
-	sudo docker run -it -p $(PORTP):8888 -v ~/Projects:/home/notebook:z $(full_image_tag) bash
 
 .PHONY: buildlocal build runlocal
