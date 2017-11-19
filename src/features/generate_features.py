@@ -1,27 +1,22 @@
 from spotipy.oauth2 import SpotifyClientCredentials
+from dotenvy import load_env, read_file
 import os
 import numpy as np
 import pandas as pd
-from dotenvy import load_env, read_file
 import spotipy
 
 
 def access_spotify(envfile_path):
     sp = spotipy.Spotify()
     load_env(read_file(envfile_path))
-    cid = os.environ.get("SPOTIPY_CLIENT_ID")
-    secret = os.environ.get("SPOTIPY_CLIENT_SECRET")
-    username = os.environ.get("SPOTIPY_USERNAME")
+    cid = os.environ.get('SPOTIPY_CLIENT_ID')
+    secret = os.environ.get('SPOTIPY_CLIENT_SECRET')
 
     client_credentials_manager = SpotifyClientCredentials(
         client_id=cid, client_secret=secret)
     sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
     token = client_credentials_manager.get_access_token()
-
-    if token:
-        sp = spotipy.Spotify(auth=token)
-    else:
-        print("Can't get token for", username)
+    sp = spotipy.Spotify(auth=token)
 
     return sp
 
@@ -30,20 +25,20 @@ def get_song_ids(sp, username, p_playlist_id, n_playlist_id):
     p_playlist = sp.user_playlist(username, p_playlist_id)
     n_playlist = sp.user_playlist(username, n_playlist_id)
 
-    p_tracks = p_playlist["tracks"]
-    p_songs = p_tracks["items"]
-    while p_tracks["next"]:
+    p_tracks = p_playlist['tracks']
+    p_songs = p_tracks['items']
+    while p_tracks['next']:
         p_tracks = sp.next(p_tracks)
-        [p_songs.append(item) for item in p_tracks["items"]]
+        [p_songs.append(item) for item in p_tracks['items']]
 
-    n_tracks = n_playlist["tracks"]
-    n_songs = n_tracks["items"]
-    while n_tracks["next"]:
+    n_tracks = n_playlist['tracks']
+    n_songs = n_tracks['items']
+    while n_tracks['next']:
         n_tracks = sp.next(n_tracks)
-        [n_songs.append(item) for item in n_tracks["items"]]
+        [n_songs.append(item) for item in n_tracks['items']]
 
-    p_ids = [p_songs[i]["track"]["id"] for i in range(0, len(p_songs))]
-    n_ids = [n_songs[i]["track"]["id"] for i in range(0, len(n_songs))]
+    p_ids = [p_songs[i]['track']['id'] for i in range(0, len(p_songs))]
+    n_ids = [n_songs[i]['track']['id'] for i in range(0, len(n_songs))]
 
     return (p_ids, n_ids)
 
