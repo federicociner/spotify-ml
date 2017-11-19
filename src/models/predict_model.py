@@ -1,0 +1,23 @@
+import sklearn.metrics as skm
+# from sklearn.metrics import classification_report
+# from sklearn.metrics import accuracy_score
+# from sklearn.metrics import average_precision_score
+# from sklearn.metrics import f1_score
+# from sklearn.metrics import roc_auc_score
+# from sklearn.metrics import hamming_loss
+
+
+def model_report(y_pred, y_true):
+    clf_report = skm.classification_report(y_true, y_pred)
+
+    report = ""
+    report += "Accuracy: {} \n".format(skm.accuracy_score(y_true, y_pred))
+    report += "ROC: {} \n".format(skm.roc_auc_score(y_true, y_pred))
+    report += "Average precision score: {} \n".format(
+        skm.average_precision_score(y_true, y_pred))
+    report += "F1: {} \n".format(skm.f1_score(y_true, y_pred))
+    report += "Hamming loss: {} \n".format(skm.hamming_loss(y_true, y_pred))
+    report += "\n"
+    report += clf_report
+
+    return report

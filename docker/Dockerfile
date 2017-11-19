@@ -14,7 +14,15 @@ COPY . /tmp/
 
 USER root
 
+# Install required python packages
 RUN pip install -r /tmp/requirements.txt
+
+# Install XGBoost
+RUN cd /usr/local/lib/ && git clone --recursive https://github.com/dmlc/xgboost \
+    && cd xgboost \
+    && make -j4  \
+    && cd python-package \
+    && python setup.py install
 
 # run as notebook user to access Jupyter
 USER $NB_USER
