@@ -28,10 +28,10 @@ def model_report(y_pred, y_true):
 
 def generate_param_grid():
     param_grid = {
-        # 'n_estimators': [100, 300, 500, 700, 900]
-        'max_depth': [4, 8, 12, 24, 32, 48]
-        # 'learning_rate': [0.0001, 0.001, 0.01, 0.1, 0.2],
-        # 'subsample': [0.6, 0.7, 0.8, 0.9]
+        'n_estimators': [300, 500, 900, 1200, 1500],
+        'max_depth': [4, 8, 10, 12, 24],
+        'learning_rate': [0.01, 0.05, 0.1, 0.2],
+        'subsample': [0.6, 0.7, 0.8, 0.9]
     }
 
     return param_grid
