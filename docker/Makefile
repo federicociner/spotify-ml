@@ -27,7 +27,7 @@ build:
 	@echo "Building container"
 	sudo docker build $(build_dir)
 
-runlocal: buildlocal
+runlocal:
 	@echo "Running container locally"
 	sudo docker run --name $(container_name) -d -p $(PORTP):8888 -v ~/Projects:/home/notebook:z $(full_image_tag)
 
