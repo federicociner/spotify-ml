@@ -12,6 +12,6 @@ Project structure:
     1. features - Source code for extracting JSON data via Spotify API and generating feature datasets.
     1. models - Contains files for training classification models and producing predictions given a new set of song features, as well as functions for pickling and loading pickled model files.
 
-Credit goes to Nick Behrens for putting together the [original tutorial].
+Credit goes to Nick Behrens for putting together the original [tutorial].
 
-[original tutorial](https://towardsdatascience.com/making-your-own-discover-weekly-f1ac7546fedb)
+[tutorial]: https://towardsdatascience.com/making-your-own-discover-weekly-f1ac7546fedb
