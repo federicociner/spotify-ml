@@ -6,9 +6,9 @@ import pandas as pd
 import spotipy
 
 
-def access_spotify(envfile_path):
+def access_spotify(filepath):
     sp = spotipy.Spotify()
-    load_env(read_file(envfile_path))
+    load_env(read_file(filepath))
     cid = os.environ.get('SPOTIPY_CLIENT_ID')
     secret = os.environ.get('SPOTIPY_CLIENT_SECRET')
 
@@ -46,18 +46,20 @@ def get_song_ids(sp, username, p_playlist_id, n_playlist_id):
 def get_features(sp, p_ids, n_ids):
     features = []
 
-    # get JSON extract of features and label positive and negative classes
+    # get dictionaries of features and label positive and negative classes
     for i in range(0, len(p_ids), 100):
         audio_features = sp.audio_features(p_ids[i:i + 100])
         for track in audio_features:
-            features.append(track)
-            features[-1]['class'] = 1
+            if track != None:
+                features.append(track)
+                features[-1]['class'] = 1
 
     for i in range(0, len(n_ids), 100):
         audio_features = sp.audio_features(n_ids[i:i + 100])
         for track in audio_features:
-            features.append(track)
-            features[-1]['class'] = 0
+            if track != None:
+                features.append(track)
+                features[-1]['class'] = 0
 
     # convert to data frame remove irrelevant features
     df = pd.DataFrame(features)
@@ -75,3 +77,6 @@ def get_features(sp, p_ids, n_ids):
 def save_features(df, filename):
     data_dir = os.path.join(os.getcwd(), os.pardir, 'data', filename)
     df.to_csv(path_or_buf=data_dir, sep=",", header=True, index=False)
+
+
+# def load_features(filename):
