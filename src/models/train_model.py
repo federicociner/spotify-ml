@@ -5,9 +5,9 @@ import pickle
 
 def generate_param_grid():
     param_grid = {
-        'n_estimators': [100, 300, 500, 700, 900],
-        'max_depth': [4, 5, 6, 7, 8, 9, 10, 12],
-        'learning_rate': [0.5, 0.1, 0.15, 0.2],
+        'n_estimators': [10, 50, 100, 200, 400, 600, 800],
+        'max_depth': [4, 5, 6, 7, 8, 9, 10, 12, 14],
+        'learning_rate': [0.075, 0.1, 0.125, 0.15, 0.175],
         'subsample': [0.6, 0.7, 0.8, 0.9, 1.0],
         'gamma': [0, 0.1, 0.2, 0.3],
         'reg_lambda': [0.001, 0.01, 0.1, 0.5, 1.0]
