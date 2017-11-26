@@ -1,7 +1,6 @@
 from spotipy.oauth2 import SpotifyClientCredentials
 from dotenvy import load_env, read_file
 import os
-import numpy as np
 import pandas as pd
 import spotipy
 
@@ -50,16 +49,14 @@ def get_features(sp, p_ids, n_ids):
     for i in range(0, len(p_ids), 100):
         audio_features = sp.audio_features(p_ids[i:i + 100])
         for track in audio_features:
-            if track != None:
-                features.append(track)
-                features[-1]['class'] = 1
+            features.append(track)
+            features[len(features) - 1]['class'] = 1
 
     for i in range(0, len(n_ids), 100):
         audio_features = sp.audio_features(n_ids[i:i + 100])
         for track in audio_features:
-            if track != None:
-                features.append(track)
-                features[-1]['class'] = 0
+            features.append(track)
+            features[len(features) - 1]['class'] = 0
 
     # convert to data frame remove irrelevant features
     df = pd.DataFrame(features)

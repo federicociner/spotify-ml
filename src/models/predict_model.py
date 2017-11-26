@@ -10,8 +10,8 @@ def model_report(y_pred, y_true):
     clf_report = classification_report(y_true, y_pred)
 
     report = ''
+    report += 'AUROC: {} \n'.format(roc_auc_score(y_true, y_pred))
     report += 'Accuracy: {} \n'.format(accuracy_score(y_true, y_pred))
-    report += 'ROC: {} \n'.format(roc_auc_score(y_true, y_pred))
     report += 'Average precision score: {} \n'.format(
         average_precision_score(y_true, y_pred))
     report += 'F1: {} \n'.format(f1_score(y_true, y_pred))
