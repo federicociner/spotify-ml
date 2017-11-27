@@ -49,14 +49,16 @@ def get_features(sp, p_ids, n_ids):
     for i in range(0, len(p_ids), 100):
         audio_features = sp.audio_features(p_ids[i:i + 100])
         for track in audio_features:
-            features.append(track)
-            features[len(features) - 1]['class'] = 1
+            if track is not None:
+                features.append(track)
+                features[len(features) - 1]['class'] = 1
 
     for i in range(0, len(n_ids), 100):
         audio_features = sp.audio_features(n_ids[i:i + 100])
         for track in audio_features:
-            features.append(track)
-            features[len(features) - 1]['class'] = 0
+            if track is not None:
+                features.append(track)
+                features[len(features) - 1]['class'] = 0
 
     # convert to data frame remove irrelevant features
     df = pd.DataFrame(features)
