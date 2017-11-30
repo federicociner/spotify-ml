@@ -2,6 +2,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from dotenvy import load_env, read_file
 import os
 import pandas as pd
+import numpy as np
 import spotipy
 
 
@@ -20,45 +21,33 @@ def access_spotify(filepath):
     return sp
 
 
-def get_song_ids(sp, username, p_playlist_id, n_playlist_id):
-    p_playlist = sp.user_playlist(username, p_playlist_id)
-    n_playlist = sp.user_playlist(username, n_playlist_id)
+def get_song_ids(sp, username, playlist_id):
+    playlist = sp.user_playlist(username, playlist_id)
 
-    p_tracks = p_playlist['tracks']
-    p_songs = p_tracks['items']
-    while p_tracks['next']:
-        p_tracks = sp.next(p_tracks)
-        [p_songs.append(item) for item in p_tracks['items']]
+    tracks = playlist['tracks']
+    songs = tracks['items']
+    while tracks['next']:
+        tracks = sp.next(tracks)
+        [songs.append(item) for item in tracks['items']]
 
-    n_tracks = n_playlist['tracks']
-    n_songs = n_tracks['items']
-    while n_tracks['next']:
-        n_tracks = sp.next(n_tracks)
-        [n_songs.append(item) for item in n_tracks['items']]
+    # get song IDs from the track list
+    song_ids = [songs[i]['track']['id'] for i in range(0, len(songs))]
 
-    p_ids = [p_songs[i]['track']['id'] for i in range(0, len(p_songs))]
-    n_ids = [n_songs[i]['track']['id'] for i in range(0, len(n_songs))]
-
-    return (p_ids, n_ids)
+    # remove songs that have no ID (where ID == None) and return list
+    song_ids = filter(lambda x: x is not None, song_ids)
+    return song_ids
 
 
-def get_features(sp, p_ids, n_ids):
+def get_features(sp, song_ids, label_value=0, as_array=False):
     features = []
 
-    # get dictionaries of features and label positive and negative classes
-    for i in range(0, len(p_ids), 100):
-        audio_features = sp.audio_features(p_ids[i:i + 100])
+    # get dictionaries of features for a list of song IDs
+    for i in range(0, len(song_ids), 50):
+        audio_features = sp.audio_features(song_ids[i:i + 50])
         for track in audio_features:
             if track is not None:
                 features.append(track)
-                features[len(features) - 1]['class'] = 1
-
-    for i in range(0, len(n_ids), 100):
-        audio_features = sp.audio_features(n_ids[i:i + 100])
-        for track in audio_features:
-            if track is not None:
-                features.append(track)
-                features[len(features) - 1]['class'] = 0
+                features[len(features) - 1]['class'] = label_value
 
     # convert to data frame remove irrelevant features
     df = pd.DataFrame(features)
@@ -70,12 +59,42 @@ def get_features(sp, p_ids, n_ids):
     df.drop(labels=['class'], axis=1, inplace=True)
     df.insert(0, 'class', col_class)
 
+    if as_array:
+        return df.as_matrix()
+
     return df
+
+
+def get_new_features(sp, username, playlist_id):
+    playlist = sp.user_playlist(username, playlist_id)
+
+    # get track and song data
+    tracks = playlist['tracks']
+    songs = tracks['items']
+    song_ids = get_song_ids(sp, username, playlist_id)
+    features = []
+    j = 0
+
+    # get dictionaries of features for a list of song IDs
+    for i in range(0, len(song_ids), 50):
+        audio_features = sp.audio_features(song_ids[i:i + 50])
+        for track in audio_features:
+            if track is not None:
+                track['song_title'] = songs[j]['track']['name']
+                track['artist'] = songs[j]['track']['artists'][0]['name']
+                j = j + 1
+                features.append(track)
+
+    return pd.DataFrame(features)
+
+
+def combine_features(datasets, type='ndarray'):
+    if type == 'ndarray':
+        return np.concatenate(datasets, axis=0)
+    elif type == 'dataframe':
+        return pd.concat(datasets)
 
 
 def save_features(df, filename):
     data_dir = os.path.join(os.getcwd(), os.pardir, 'data', filename)
     df.to_csv(path_or_buf=data_dir, sep=",", header=True, index=False)
-
-
-# def load_features(filename):
