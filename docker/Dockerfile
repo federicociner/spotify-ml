@@ -1,6 +1,6 @@
 # spotify-ml Dockerfile
 
-FROM federicociner/python-notebook:latest
+FROM federicociner/python2-notebook:latest
 MAINTAINER Federico Ciner <federico.ciner@gmail.com>
 
 ARG DEBIAN_FRONTEND=noninteractive
