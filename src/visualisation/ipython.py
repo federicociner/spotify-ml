@@ -1,5 +1,5 @@
 def input_toggle():
-    return '''<script>
+    return """<script>
     code_show=true;
     function code_toggle() {
      if (code_show){
@@ -11,4 +11,4 @@ def input_toggle():
     }
     $( document ).ready(code_toggle);
     </script>
-    To display code, click <a href="javascript:code_toggle()">here</a>.'''
+    To display code, click <a href="javascript:code_toggle()">here</a>."""
